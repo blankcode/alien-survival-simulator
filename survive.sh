@@ -59,16 +59,11 @@ reproduce() {
 }
 
 outcome() {
-        event=$((RANDOM%4+1))
-        if [[ $event == 1 ]]; then
-                die; echo "$me died"
-        elif [[ $event == 2 ]]; then
-                echo "$me did nothing today"
-        elif [[ $event == 3 ]]; then
-                double; echo "$me reproduced"
-        elif [[ $event == 4 ]]; then
-                triple; echo "$me reproduced twice"
-        fi
+event=$((RANDOM%4+1))
+  [[ $event == 1 ]]; && { die; echo "$me died"; };
+  [[ $event == 2 ]]; && { echo "$me did nothing today, lazy git."; };
+  [[ $event == 3 ]]; && { double; echo "$me reproduced"; };
+  [[ $event == 4 ]]; && { triple; echo "$me reproduced twice"; };
 }
 
 newday() {
@@ -92,38 +87,31 @@ init() {
 	echo "day=1" >./day
 	
 	#newfirst
-
 }
 
 newfirst() {
-        run=$(($run+1))
+  run=$(($run+1))
 	echo "$run," >> ./thisrun.csv
 }
 
 main() {
+  thisrun=$(tail -n1 ./thisrun.csv)
+  run=$(echo $thisrun | cut -d"," -f1)
 
-        thisrun=$(tail -n1 ./thisrun.csv)
-        run=$(echo $thisrun | cut -d"," -f1)
+  grep -l "ALIVE" ./aliens/* > ./livingaliens
+  newday
+  for alien in $(cat livingaliens); do
+      me=$(grep name $alien | cut -d= -f2)
+      myparrent=$(grep parrent $alien | cut -d= -f2)
+      myage=$(grep age $alien | cut -d= -f2)
+      age
+      outcome
+    done
+  population=$(wc -l ./livingaliens | awk {'print $1'})
+  sed -i 's/$thisrun/$thisrun,$population/g'
 
-        grep -l "ALIVE" ./aliens/* > ./livingaliens
-	newday
-        for alien in $(cat livingaliens)
-                do
-                        me=$(grep name $alien | cut -d= -f2)
-                        myparrent=$(grep parrent $alien | cut -d= -f2)
-                        myage=$(grep age $alien | cut -d= -f2)
-                        age
-                        outcome
-			
-                done
-	population=$(wc -l ./livingaliens | awk {'print $1'})
-	sed -i 's/$thisrun/$thisrun,$population/g'
-
-	if [[ $population > 5000 ]] 
-		then
-			init
-	fi
-
-}
+  # Population control. Ends the Simulation at a population set below
+  [[ $population > 5000 ]] && { init; };
+};
 
 main;
