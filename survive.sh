@@ -26,44 +26,44 @@
 
 # functions
 
-cd /home/bblankenship/alien-survival-simulator
+cd /home/$USER/alien-survival-simulator
 
 age() {
 	age=$(($myage+1))
-        sed -i -e "s/^age=.*$/age=$age/" $alien
+  sed -i -e "s/^age=.*$/age=$age/" $alien
 }
 
 die() {
-        #echo -e "DEAD" >> $alien
-        sed -i -e "s/ALIVE/DEAD/" $alien
+  #echo -e "DEAD" >> $alien
+  sed -i -e "s/ALIVE/DEAD/" $alien
 	echo -e "Day $day died" >> $alien
 	echo -e "Day $day $childname Died" >> ./aliens/$myparrent
 }
 
 double() {
-        reproduce
+  reproduce
 }
 
 triple() {
-        reproduce;reproduce
+  reproduce;reproduce
 }
 
 reproduce() {
-        childname=$(date +%A-%B-%d-%Y-%H:%M:%S:%N|md5sum|cut -d' ' -f1)
-        echo -e "name=$childname" > ./aliens/$childname
-        echo -e "parent=$me" >> ./aliens/$childname
-        echo -e "ALIVE" >> ./aliens/$childname
-        echo -e "age=1" >> ./aliens/$childname
+  childname=$(date +%A-%B-%d-%Y-%H:%M:%S:%N|md5sum|cut -d' ' -f1)
+  echo -e "name=$childname" > ./aliens/$childname
+  echo -e "parent=$me" >> ./aliens/$childname
+  echo -e "ALIVE" >> ./aliens/$childname
+  echo -e "age=1" >> ./aliens/$childname
 	echo -e "Day $day Born" >> ./aliens/$childname
 	echo -e "Day $day gave birth to $childname" >> ./aliens/$me
 }
 
 outcome() {
-event=$((RANDOM%4+1))
-  [[ $event == 1 ]]; && { die; echo "$me died"; };
-  [[ $event == 2 ]]; && { echo "$me did nothing today, lazy git."; };
-  [[ $event == 3 ]]; && { double; echo "$me reproduced"; };
-  [[ $event == 4 ]]; && { triple; echo "$me reproduced twice"; };
+  event=$((RANDOM%4+1))
+  [[ $event == 1 ]]; && { die;    echo -nr "$me died.                       "; };
+  [[ $event == 2 ]]; && {         echo -nr "$me did nothing today, lazy git."; };
+  [[ $event == 3 ]]; && { double; echo -nr "$me reproduced.                 "; };
+  [[ $event == 4 ]]; && { triple; echo -nr "$me reproduced and had twins!   "; };
 }
 
 newday() {
@@ -73,19 +73,15 @@ newday() {
 
 init() {
 	rm ./aliens/*
-
 	name=$(date +%A-%B-%d-%Y-%H:%M:%S:%N|md5sum|cut -d' ' -f1)
-	mkdir /home/bblankenship/alien-survival-simulator/aliens
-	touch /home/bblankenship/alien-survival-simulator/aliens/$name
+	mkdir /home/$USER/alien-survival-simulator/aliens
+	touch /home/$USER/alien-survival-simulator/aliens/$name
 	echo -e "name=$name
 	echo -e ALIVE
 	age=1
-	parent=Crash Survivor" > /home/bblankenship/alien-survival-simulator/aliens/$name
-
+	parent=Crash Survivor" > /home/$USER/alien-survival-simulator/aliens/$name
 	echo $name > livingaliens
-
 	echo "day=1" >./day
-	
 	#newfirst
 }
 
@@ -100,7 +96,8 @@ main() {
 
   grep -l "ALIVE" ./aliens/* > ./livingaliens
   newday
-  for alien in $(cat livingaliens); do
+  for alien in $(cat livingaliens); 
+    do
       me=$(grep name $alien | cut -d= -f2)
       myparrent=$(grep parrent $alien | cut -d= -f2)
       myage=$(grep age $alien | cut -d= -f2)
