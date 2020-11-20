@@ -48,11 +48,11 @@ triple() {
   reproduce;reproduce
 }
 
-reproduce() {
+reproduce() {ALIVE" >> ./aliens/$childname
+  echo -e "
   childname=$(date +%A-%B-%d-%Y-%H:%M:%S:%N|md5sum|cut -d' ' -f1)
   echo -e "name=$childname" > ./aliens/$childname
   echo -e "parent=$me" >> ./aliens/$childname
-  echo -e "ALIVE" >> ./aliens/$childname
   echo -e "age=1" >> ./aliens/$childname
 	echo -e "Day $day Born" >> ./aliens/$childname
 	echo -e "Day $day gave birth to $childname" >> ./aliens/$me
