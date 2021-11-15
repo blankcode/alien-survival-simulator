@@ -48,7 +48,8 @@ triple() {
   reproduce;reproduce
 }
 
-reproduce() {ALIVE" >> ./aliens/$childname
+reproduce() {
+  ALIVE" >> ./aliens/$childname
   echo -e "
   childname=$(date +%A-%B-%d-%Y-%H:%M:%S:%N|md5sum|cut -d' ' -f1)
   echo -e "name=$childname" > ./aliens/$childname
