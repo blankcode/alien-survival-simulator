@@ -121,7 +121,7 @@ main() {
   sed -i 's/$thisrun/$thisrun,$population/g'
 
   # Population control. Ends the Simulation at a population set below
-  [[ $population > 5000 ]] && { init; }
+  [[ $population -gt 5000 ]] && { init; }
 }
 
 main
